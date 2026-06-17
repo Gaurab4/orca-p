@@ -618,7 +618,7 @@ function FileExplorerFiles(): React.JSX.Element {
         </div>
         {/* Why: the Files and Contents views share one body slot; layering them
            avoids remounting heavy virtualized panes while preserving full height. */}
-        <div className="relative min-h-0 flex-1 overflow-hidden">
+        <div className="relative min-h-0 flex-1 overflow-y-scroll">
           <ScrollArea
             className={cn(
               'absolute inset-0 min-h-0',
