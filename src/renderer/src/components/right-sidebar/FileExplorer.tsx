@@ -618,10 +618,10 @@ function FileExplorerFiles(): React.JSX.Element {
         </div>
         {/* Why: the Files and Contents views share one body slot; layering them
            avoids remounting heavy virtualized panes while preserving full height. */}
-        <div className="relative min-h-0 flex-1 overflow-y-scroll">
-          <ScrollArea
+        <div className="relative min-h-0 flex-1 overflow-hidden">
+          <div
             className={cn(
-              'absolute inset-0 min-h-0',
+              'absolute inset-0 flex min-h-0 flex-col',
               explorerView !== 'files' && 'pointer-events-none invisible',
               isRootDragOver &&
                 explorerView === 'files' &&
@@ -629,76 +629,80 @@ function FileExplorerFiles(): React.JSX.Element {
                 'bg-border',
               isNativeDragOver && explorerView === 'files' && !nativeDropTargetDir && 'bg-border'
             )}
-            viewportRef={scrollRef}
-            viewportTabIndex={-1}
-            viewportClassName="h-full min-h-0 py-2"
-            data-native-file-drop-target={isFilesViewActive ? 'file-explorer' : undefined}
-            data-native-file-drop-dir={visibleFilesWorktreePath ?? undefined}
-            onWheelCapture={handleWheelCapture}
-            onDragOver={rootDragHandlers.onDragOver}
-            onDragEnter={rootDragHandlers.onDragEnter}
-            onDragLeave={rootDragHandlers.onDragLeave}
-            onDrop={rootDragHandlers.onDrop}
-            onDragEnd={() => {
-              stopDragEdgeScroll()
-              setDropTargetDir(null)
-            }}
-            viewportProps={{
-              onContextMenuCapture: handleExplorerBackgroundContextMenuCapture,
-              onDoubleClick: handleExplorerBackgroundDoubleClick
-            }}
           >
-            {!showTree && (
-              <FileExplorerTreeStatus
-                isLoading={isLoading}
-                error={hasError ? treeError : null}
-                isEmpty={isEmptyState && !isLoading && !hasError}
-                emptyMessage={emptyMessage}
-              />
-            )}
-            {showTree && (
-              <FileExplorerVirtualRows
-                virtualizer={virtualizer}
-                inlineInputIndex={inlineInputIndex}
-                rowProjection={rowProjection}
-                inlineInput={inlineInput}
-                handleInlineSubmit={handleInlineSubmit}
-                dismissInlineInput={dismissInlineInput}
-                folderStatusByRelativePath={folderStatusByRelativePath}
-                statusByRelativePath={statusByRelativePath}
-                ignoredByRelativePath={ignoredByRelativePath}
-                expanded={rowExpandedPaths}
-                canCollapseFolderSubtree={!hasNameFilter}
-                dirCache={dirCache}
-                selectedPaths={selectedPaths}
-                activeFileId={activeFileId}
-                flashingPath={flashingPath}
-                deleteShortcutLabel={deleteShortcutLabel}
-                connectionId={activeRepo?.connectionId ?? null}
-                onClick={handleRowClick}
-                onDoubleClick={handleDoubleClick}
-                onContextMenuSelect={preserveSelectionForContextMenu}
-                onCopyPaths={copyPathsForNode}
-                onStartNew={startNew}
-                onStartRename={startRename}
-                onDuplicate={handleDuplicate}
-                onAddFolderAsProject={handleAddFolderAsProject}
-                canAddFolderAsProject={(node) => canShowAddAsProjectAction(node, activeRepo)}
-                onRequestDelete={handleContextMenuDelete}
-                onCollapseFolderSubtree={handleCollapseFolderSubtree}
-                onFindInFolder={handleFindInFolder}
-                onMoveDrop={handleMoveDrop}
-                onDragTargetChange={setDropTargetDir}
-                onDragSourceChange={setDragSourcePath}
-                onDragExpandDir={handleDragExpandDir}
-                onNativeDragTargetChange={setNativeDropTargetDir}
-                onNativeDragExpandDir={handleNativeDragExpandDir}
-                dropTargetDir={dropTargetDir}
-                dragSourcePath={dragSourcePath}
-                nativeDropTargetDir={nativeDropTargetDir}
-              />
-            )}
-          </ScrollArea>
+            <ScrollArea
+              className="min-h-0 flex-1"
+              viewportRef={scrollRef}
+              viewportTabIndex={-1}
+              viewportClassName="h-full min-h-0 py-2"
+              data-native-file-drop-target={isFilesViewActive ? 'file-explorer' : undefined}
+              data-native-file-drop-dir={visibleFilesWorktreePath ?? undefined}
+              onWheelCapture={handleWheelCapture}
+              onDragOver={rootDragHandlers.onDragOver}
+              onDragEnter={rootDragHandlers.onDragEnter}
+              onDragLeave={rootDragHandlers.onDragLeave}
+              onDrop={rootDragHandlers.onDrop}
+              onDragEnd={() => {
+                stopDragEdgeScroll()
+                setDropTargetDir(null)
+              }}
+              viewportProps={{
+                onContextMenuCapture: handleExplorerBackgroundContextMenuCapture,
+                onDoubleClick: handleExplorerBackgroundDoubleClick
+              }}
+            >
+              {!showTree && (
+                <FileExplorerTreeStatus
+                  isLoading={isLoading}
+                  error={hasError ? treeError : null}
+                  isEmpty={isEmptyState && !isLoading && !hasError}
+                  emptyMessage={emptyMessage}
+                />
+              )}
+              {showTree && (
+                <FileExplorerVirtualRows
+                  virtualizer={virtualizer}
+                  inlineInputIndex={inlineInputIndex}
+                  rowProjection={rowProjection}
+                  inlineInput={inlineInput}
+                  handleInlineSubmit={handleInlineSubmit}
+                  dismissInlineInput={dismissInlineInput}
+                  folderStatusByRelativePath={folderStatusByRelativePath}
+                  statusByRelativePath={statusByRelativePath}
+                  ignoredByRelativePath={ignoredByRelativePath}
+                  expanded={rowExpandedPaths}
+                  canCollapseFolderSubtree={!hasNameFilter}
+                  dirCache={dirCache}
+                  selectedPaths={selectedPaths}
+                  activeFileId={activeFileId}
+                  flashingPath={flashingPath}
+                  deleteShortcutLabel={deleteShortcutLabel}
+                  connectionId={activeRepo?.connectionId ?? null}
+                  onClick={handleRowClick}
+                  onDoubleClick={handleDoubleClick}
+                  onContextMenuSelect={preserveSelectionForContextMenu}
+                  onCopyPaths={copyPathsForNode}
+                  onStartNew={startNew}
+                  onStartRename={startRename}
+                  onDuplicate={handleDuplicate}
+                  onAddFolderAsProject={handleAddFolderAsProject}
+                  canAddFolderAsProject={(node) => canShowAddAsProjectAction(node, activeRepo)}
+                  onRequestDelete={handleContextMenuDelete}
+                  onCollapseFolderSubtree={handleCollapseFolderSubtree}
+                  onFindInFolder={handleFindInFolder}
+                  onMoveDrop={handleMoveDrop}
+                  onDragTargetChange={setDropTargetDir}
+                  onDragSourceChange={setDragSourcePath}
+                  onDragExpandDir={handleDragExpandDir}
+                  onNativeDragTargetChange={setNativeDropTargetDir}
+                  onNativeDragExpandDir={handleNativeDragExpandDir}
+                  dropTargetDir={dropTargetDir}
+                  dragSourcePath={dragSourcePath}
+                  nativeDropTargetDir={nativeDropTargetDir}
+                />
+              )}
+            </ScrollArea>
+          </div>
           <div
             className={cn(
               'absolute inset-0 flex min-h-0 flex-col',
